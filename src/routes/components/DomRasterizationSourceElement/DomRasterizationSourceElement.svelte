@@ -54,7 +54,7 @@
                     class="form-button"
                     type="button"
                     style={`background: ${buttonBackground}; border: ${buttonBorder}; color: ${buttonColor}; font-size: 28px; font-weight: bold; font-family: 'Roboto', sans-serif; padding: 10px 20px;`}
-                    on:click={() => text = ''}
+                    on:click={() => text = ' '}
             >
                 clear
             </button>

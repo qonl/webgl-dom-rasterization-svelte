@@ -203,7 +203,6 @@
             const loadedTexture = loader.load(
                 source,
                 texture => {
-                    // console.log(`Texture loaded for ${name}`, texture); // Debugging output
                     resolve({ name, texture });
                 },
                 undefined,
@@ -213,12 +212,10 @@
     }
 
     function bindTextures (material, textures) {
-        // console.log('bindTextures');
         const max = 5;
         Object.keys(textures).forEach((name, i) => {
             if (i <= max) {
                 material.uniforms[`u_diffuse${i}`].value = textures[name];
-                // console.log(`Assigned texture ${name} to u_diffuse${i}`, textures[name]);
             }
         });
         material.needsUpdate = true;
