@@ -64,11 +64,6 @@
         }
     });
 
-    function init() {
-        initScene();
-
-    }
-
     function initScene() {
         scene = new THREE.Scene();
         renderer = new THREE.WebGLRenderer({ canvas });
@@ -99,8 +94,6 @@
 
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
-
-        // console.log('Scene initialized:', { scene, camera, renderer, mesh });
     }
 
     function rasterize () {
@@ -112,7 +105,6 @@
     }
 
     async function refreshImage () {
-        // console.log('Refreshing image...');
         const { DOMImage, size } = await rasterizeElement(sourceElementRef);
         imageTextures = { DOMImage };
         material.uniforms.u_samplerResolution0.value = size;
@@ -128,7 +120,6 @@
 
     async function rasterizeElement (source) {
         if (!source) return;
-        // console.log('Rasterize source:', source);
 
         // todo: svelte is annoying sometimes
         const input = source.querySelector('input');
@@ -146,7 +137,6 @@
         context.drawImage(image, 0, 0);
         const png = canvas.toDataURL();
         if (toggleDebugImg) debugImg.src = png;
-        // console.log(debugImg);
         return {
             DOMImage: png,
             size: {
@@ -186,10 +176,8 @@
     }
 
     async function loadTextures (images) {
-        // console.log('loadTextures');
         if (images) {
             return loadImageTextures(images).then(loadedTextures => {
-                // console.log('Loaded Textures:', loadedTextures); // Debugging output
                 bindTextures(material, loadedTextures);
                 return loadedTextures;
             });
@@ -320,26 +308,31 @@
         }}
 />
 
-<div class="container">
-    <canvas
-            class="fullscreen-canvas"
-            bind:this={canvas}
-            width={size.x}
-            height={size.y}
-    />
+{#if !allowMotion}
     <DomRasterizationSource
-            {mouseUpHandler}
-            {refreshImageOnEvent}
-            bind:sourceRef={sourceElementRef}
-            bind:cursorRef={cursorElementRef}
-            {uniforms}
+        bind:sourceRef={sourceElementRef}
     />
-</div>
-<button class="toggle-image" type="button" on:click={() => toggleDebugImg = !toggleDebugImg}>Toggle Debug Image</button>
-{#if toggleDebugImg}
-    <img bind:this={debugImg}>
-{/if}
-
+{:else}
+    <div class="container">
+        <canvas
+                class="fullscreen-canvas"
+                bind:this={canvas}
+                width={size.x}
+                height={size.y}
+        />
+        <DomRasterizationSource
+                {mouseUpHandler}
+                {refreshImageOnEvent}
+                bind:sourceRef={sourceElementRef}
+                bind:cursorRef={cursorElementRef}
+                {uniforms}
+        />
+    </div>
+    <button class="toggle-image" type="button" on:click={() => toggleDebugImg = !toggleDebugImg}>Toggle Debug Image</button>
+    {#if toggleDebugImg}
+        <img bind:this={debugImg}>
+    {/if}
+    {/if}
 <style lang="scss">
     .container {
         position: relative;
